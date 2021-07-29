@@ -7,7 +7,7 @@
 #PJM -g gt69
 #PJM -j
 #PJM -e err
-#PJM -o t20.lst
+#PJM -o core28.lst
 
 export KMP_AFFINITY=granularity=fine,compact
 ./sol20
