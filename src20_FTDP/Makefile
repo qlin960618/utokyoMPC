@@ -1,6 +1,6 @@
 CC        = icc
 OPTFLAGS= -O3 -axCORE-AVX512 -align -qopenmp -no-multibyte-chars -ipo
-TARGET    = ../run/sol20
+TARGET    = ../run_FTDP/sol20
 
 .SUFFIXES:
 .SUFFIXES: .o .c 
