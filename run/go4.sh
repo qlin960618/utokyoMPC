@@ -1,6 +1,6 @@
 #!/bin/sh
 #PJM -N "test2"
-#PJM -L rscgrp=lecture9
+#PJM -L rscgrp=lecture
 #PJM -L node=1
 #PJM --omp thread=24
 #PJM -L elapse=00:15:00
