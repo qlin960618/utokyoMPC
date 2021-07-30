@@ -41,135 +41,149 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			return -1;
 		}
 	}
-
-#pragma omp parallel for private (i)
-	for(i=0; i<N; i++) {
-		X[i] = 0.0;
-		W[1][i] = 0.0;
-		W[2][i] = 0.0;
-		W[3][i] = 0.0;
-	}
-
-/**************************
- * {r0} = {b} - {A}{xini} *
- **************************/
-#pragma omp parallel for private (i,VAL,j)
-	for(i=0; i<N; i++) {
-		VAL = D[i] * X[i];
-		for(j=indexL[i]; j<indexL[i+1]; j++) {
-			VAL += AL[j] * X[itemL[j]-1];
-		}
-		for(j=indexU[i]; j<indexU[i+1]; j++) {
-			VAL += AU[j] * X[itemU[j]-1];
-		}
-		W[R][i] = B[i] - VAL;
-	}
-
-	BNRM2 = 0.0;
-#pragma omp parallel for private (i) reduction (+:BNRM2)
-	for(i=0; i<N; i++) {
-	  BNRM2 += B[i]*B[i];
-	}
-
-#pragma omp parallel for private (i)
-	for(i=0; i<N; i++) {
-	  W[DD][i]= 1.e0/D[i];
-	}
-
-/************************************************************** ITERATION */
-	*ITR = N;
-
-	Stime = omp_get_wtime();
-	for(L=0; L<(*ITR); L++) {
-
-/*******************
- * {z} = [Minv]{r} *
- *******************/
-#pragma omp parallel for private (i)
-	  for(i=0; i<N; i++) {
-	    W[Z][i] = W[R][i]*W[DD][i];
-	  }
-/****************
- * RHO = {r}{z} *
- ****************/
-		RHO = 0.0;
-#pragma omp parallel for private (i) reduction(+:RHO)
+// might need to start earlier in the initialization of pointer
+#pragma omp parallel
+{
+/* initializationunder this block
+	#pragma omp for private (i)
 		for(i=0; i<N; i++) {
-		  RHO += W[R][i] * W[Z][i];
+
+		}
+*/
+
+	// Is it sufficient to do FTDP here??
+	#pragma omp for private (i)
+		for(i=0; i<N; i++) {
+			X[i] = 0.0;
+			W[1][i] = 0.0;
+			W[2][i] = 0.0;
+			W[3][i] = 0.0;
 		}
 
-/********************************
- * {p}  = {z} if      ITER=0    *
- * BETA = RHO / RHO1  otherwise *
- ********************************/
-		if(L == 0) {
-#pragma omp parallel for private (i)
+	/**************************
+	 * {r0} = {b} - {A}{xini} *
+	 **************************/
+	#pragma omp for private (i,VAL,j)
+		for(i=0; i<N; i++) {
+			VAL = D[i] * X[i];
+			for(j=indexL[i]; j<indexL[i+1]; j++) {
+				VAL += AL[j] * X[itemL[j]-1];
+			}
+			for(j=indexU[i]; j<indexU[i+1]; j++) {
+				VAL += AU[j] * X[itemU[j]-1];
+			}
+			W[R][i] = B[i] - VAL;
+		}
+
+		BNRM2 = 0.0;
+	#pragma omp for private (i) reduction (+:BNRM2) nowait
+		for(i=0; i<N; i++) {
+		  BNRM2 += B[i]*B[i];
+		}
+
+	#pragma omp for private (i) nowait
+		for(i=0; i<N; i++) {
+		  W[DD][i]= 1.e0/D[i];
+		}
+
+	/************************************************************** ITERATION */
+		*ITR = N;
+
+		Stime = omp_get_wtime();
+		for(L=0; L<(*ITR); L++) {
+
+	/*******************
+	 * {z} = [Minv]{r} *
+	 *******************/
+	#pragma omp for private (i)
 		  for(i=0; i<N; i++) {
-			W[P][i] = W[Z][i];
+		    W[Z][i] = W[R][i]*W[DD][i];
 		  }
-		} else {
-		  BETA = RHO / RHO1;
-#pragma omp parallel for private (i)
-		  for(i=0; i<N; i++) {
-			W[P][i] = W[Z][i] + BETA * W[P][i];
-		}
-		}
+	/****************
+	 * RHO = {r}{z} *
+	 ****************/
+			RHO = 0.0;
+	#pragma omp for private (i) reduction(+:RHO)
+			for(i=0; i<N; i++) {
+			  RHO += W[R][i] * W[Z][i];
+			}
 
-/****************
- * {q} = [A]{p} *
- ****************/
-#pragma omp parallel for private (i,VAL,j)
-		for(i=0; i<N; i++) {
-		  VAL = D[i] * W[P][i];
-		  for(j=indexL[i]; j<indexL[i+1]; j++) {
-			VAL += AL[j] * W[P][itemL[j]-1];
-		  }
-		  for(j=indexU[i]; j<indexU[i+1]; j++) {
-			VAL += AU[j] * W[P][itemU[j]-1];
-		  }
-		  W[Q][i] = VAL;
+	/********************************
+	 * {p}  = {z} if      ITER=0    *
+	 * BETA = RHO / RHO1  otherwise *
+	 ********************************/
+			if(L == 0) {
+				#pragma omp for private (i) nowait
+			  for(i=0; i<N; i++) {
+					W[P][i] = W[Z][i];
+			  }
+			} else {
+
+
+					BETA = RHO / RHO1;
+
+				#pragma omp for private (i)
+			  for(i=0; i<N; i++) {
+					W[P][i] = W[Z][i] + BETA * W[P][i];
+				}
+			}
+
+	/****************
+	 * {q} = [A]{p} *
+	 ****************/
+	#pragma omp for private (i,VAL,j)
+			for(i=0; i<N; i++) {
+			  VAL = D[i] * W[P][i];
+			  for(j=indexL[i]; j<indexL[i+1]; j++) {
+				VAL += AL[j] * W[P][itemL[j]-1];
+			  }
+			  for(j=indexU[i]; j<indexU[i+1]; j++) {
+				VAL += AU[j] * W[P][itemU[j]-1];
+			  }
+			  W[Q][i] = VAL;
+			}
+
+	/************************
+	 * ALPHA = RHO / {p}{q} *
+	 ************************/
+			C1 = 0.0;
+	#pragma omp for private (i) reduction(+:C1)
+			for(i=0; i<N; i++) {
+				C1 += W[P][i] * W[Q][i];
+			}
+
+			ALPHA = RHO / C1;
+
+	/***************************
+	 * {x} = {x} + ALPHA * {p} *
+	 * {r} = {r} - ALPHA * {q} *
+	 ***************************/
+	#pragma omp for private (i)
+			for(i=0; i<N; i++) {
+				X[i]    += ALPHA * W[P][i];
+				W[R][i] -= ALPHA * W[Q][i];
+			}
+
+			DNRM2 = 0.0;
+	#pragma omp for private (i) reduction(+:DNRM2)
+			for(i=0; i<N; i++) {
+			  DNRM2 += W[R][i]*W[R][i];
+			}
+
+			ERR = sqrt(DNRM2/BNRM2);
+	                if( (L+1)%100 ==1) {
+	                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
+	                }
+
+			if(ERR < EPS) {
+				*IER = 0;
+				goto N900;
+			} else {
+				RHO1 = RHO;
+			}
 		}
-
-/************************
- * ALPHA = RHO / {p}{q} *
- ************************/
-		C1 = 0.0;
-#pragma omp parallel for private (i) reduction(+:C1)
-		for(i=0; i<N; i++) {
-			C1 += W[P][i] * W[Q][i];
-		}
-
-		ALPHA = RHO / C1;
-
-/***************************
- * {x} = {x} + ALPHA * {p} *
- * {r} = {r} - ALPHA * {q} *
- ***************************/
-#pragma omp parallel for private (i)
-		for(i=0; i<N; i++) {
-			X[i]    += ALPHA * W[P][i];
-			W[R][i] -= ALPHA * W[Q][i];
-		}
-
-		DNRM2 = 0.0;
-#pragma omp parallel for private (i) reduction(+:DNRM2)
-		for(i=0; i<N; i++) {
-		  DNRM2 += W[R][i]*W[R][i];
-		}
-
-		ERR = sqrt(DNRM2/BNRM2);
-                if( (L+1)%100 ==1) {
-                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
-                }
-
-		if(ERR < EPS) {
-			*IER = 0;
-			goto N900;
-		} else {
-			RHO1 = RHO;
-		}
-	}
-	*IER = 1;
+		*IER = 1;
+}
 
 N900:
 	Etime = omp_get_wtime();
