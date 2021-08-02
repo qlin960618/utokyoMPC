@@ -66,6 +66,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/**************************
 	 * {r0} = {b} - {A}{xini} *
 	 **************************/
+		#pragma omp barrier
 		#pragma omp for private (i,VAL,j)
 		for(i=0; i<N; i++) {
 			VAL = D[i] * X[i];
@@ -78,12 +79,13 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			W[R][i] = B[i] - VAL;
 		}
 
-
+		#pragma omp barrier
 		#pragma omp for private (i) reduction (+:BNRM2)
 		for(i=0; i<N; i++) {
 		  BNRM2 += B[i]*B[i];
 		}
 
+		#pragma omp barrier
 		#pragma omp for private (i)
 		for(i=0; i<N; i++) {
 		  W[DD][i]= 1.e0/D[i];
@@ -101,6 +103,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/*******************
 	 * {z} = [Minv]{r} *
 	 *******************/
+		 #pragma omp barrier
 			#pragma omp for private (i)
 		  for(i=0; i<N; i++) {
 		    W[Z][i] = W[R][i]*W[DD][i];
@@ -114,6 +117,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 				RHO = 0.0;
 			}
 
+			#pragma omp barrier
 			#pragma omp for private (i) reduction(+:RHO)
 			for(i=0; i<N; i++) {
 			  RHO += W[R][i] * W[Z][i];
@@ -140,6 +144,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			// 	}
 			// }
 
+			#pragma omp barrier
 			#pragma omp for private(i) firstprivate(L)
 			for(i=0; i<N; i++) {
 				if(L==0){
@@ -151,6 +156,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/****************
 	 * {q} = [A]{p} *
 	 ****************/
+			#pragma omp barrier
 			#pragma omp for private (i,VAL,j)
 			for(i=0; i<N; i++) {
 			  VAL = D[i] * W[P][i];
@@ -167,8 +173,8 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * ALPHA = RHO / {p}{q} *
 	 ************************/
 			#pragma omp barrier
+			#pragma omp master
 	 		{
-				#pragma omp master
 				C1 = 0.0;
 			}
 			#pragma omp barrier
