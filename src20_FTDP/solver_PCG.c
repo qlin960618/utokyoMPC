@@ -92,6 +92,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/************************************************************** ITERATION */
 
 		Stime = omp_get_wtime();
+		#pragma omp single
 		for(L=0; L<(*ITR); L++) {
 
 	/*******************
@@ -117,22 +118,19 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * {p}  = {z} if      ITER=0    *
 	 * BETA = RHO / RHO1  otherwise *
 	 ********************************/
-			if(L == 0) {
-				#pragma omp for private (i)
-			  for(i=0; i<N; i++) {
-					W[P][i] = W[Z][i];
-			  }
-			} else {
-
-				#pragma omp master
-				{
-					BETA = RHO / RHO1;
-				}
-				#pragma omp for private (i)
-			  for(i=0; i<N; i++) {
-					W[P][i] = W[Z][i] + BETA * W[P][i];
-				}
+			#pragma omp master
+			{
+				BETA = RHO / RHO1;
 			}
+			#pragma omp for if(L==0) private(i)
+			for(i=0; i<N; i++) {
+				W[P][i] = W[Z][i];
+			}
+			#pragma omp for if(L!=0) private(i)
+		  for(i=0; i<N; i++) {
+				W[P][i] = W[Z][i] + BETA * W[P][i];
+			}
+
 
 	/****************
 	 * {q} = [A]{p} *
