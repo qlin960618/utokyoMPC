@@ -59,7 +59,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	// Is it sufficient to do FTDP here??
 		#pragma omp for private (i)
 		for(i=0; i<N; i++) {
-			fprintf("N:%5d, t:%2d", i, omp_get_thread_num());
+			fprintf(stdout, "N:%5d, t:%2d", i, omp_get_thread_num());
 			X[i] = 0.0;
 			W[1][i] = 0.0;
 			W[2][i] = 0.0;
@@ -72,7 +72,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		#pragma omp barrier
 		#pragma omp for private (i,VAL,j)
 		for(i=0; i<N; i++) {
-			fprintf("N:%5d, t:%2d", i, omp_get_thread_num());
+			fprintf(stdout, "N:%5d, t:%2d", i, omp_get_thread_num());
 			VAL = D[i] * X[i];
 			for(j=indexL[i]; j<indexL[i+1]; j++) {
 				VAL += AL[j] * X[itemL[j]-1];
@@ -86,7 +86,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		#pragma omp barrier
 		#pragma omp for private (i) reduction (+:BNRM2)
 		for(i=0; i<N; i++) {
-			fprintf("N:%5d, t:%2d", i, omp_get_thread_num());
+			fprintf(stdout, "N:%5d, t:%2d", i, omp_get_thread_num());
 		  BNRM2 += B[i]*B[i];
 		}
 
