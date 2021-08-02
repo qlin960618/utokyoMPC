@@ -1,3 +1,4 @@
+OMP: Warning #58: KMP_AFFINITY: parameter invalid, ignoring "balance".
     1    8.958216e+00
   101    8.313496e+00
   201    2.090443e+00
@@ -8,8 +9,9 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    2.544613e+00 sec. (solver)
+    2.412575e+00 sec. (solver)
    2097152    1.459831e+04
+OMP: Warning #58: KMP_AFFINITY: parameter invalid, ignoring "balance".
     1    8.958216e+00
   101    8.313496e+00
   201    2.090443e+00
@@ -20,8 +22,9 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    2.532235e+00 sec. (solver)
+    2.482600e+00 sec. (solver)
    2097152    1.459831e+04
+OMP: Warning #58: KMP_AFFINITY: parameter invalid, ignoring "balance".
     1    8.958216e+00
   101    8.313496e+00
   201    2.090443e+00
@@ -32,8 +35,9 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    2.619850e+00 sec. (solver)
+    2.399014e+00 sec. (solver)
    2097152    1.459831e+04
+OMP: Warning #58: KMP_AFFINITY: parameter invalid, ignoring "balance".
     1    8.958216e+00
   101    8.313496e+00
   201    2.090443e+00
@@ -44,8 +48,9 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    2.495663e+00 sec. (solver)
+    2.377163e+00 sec. (solver)
    2097152    1.459831e+04
+OMP: Warning #58: KMP_AFFINITY: parameter invalid, ignoring "balance".
     1    8.958216e+00
   101    8.313496e+00
   201    2.090443e+00
@@ -56,5 +61,5 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    2.438177e+00 sec. (solver)
+    2.665389e+00 sec. (solver)
    2097152    1.459831e+04
