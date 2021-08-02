@@ -57,7 +57,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	*/
 
 	// Is it sufficient to do FTDP here??
-		#pragma omp for private (i)
+		#pragma omp for private (i) schedule(static)
 		for(i=0; i<N; i++) {
 			X[i] = 0.0;
 			W[1][i] = 0.0;
@@ -70,7 +70,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 **************************/
 		#pragma omp barrier
 
-		#pragma omp for private (i,VAL,j)
+		#pragma omp for private (i,VAL,j) schedule(static)
 		for(i=0; i<N; i++) {
 			VAL = D[i] * X[i];
 			for(j=indexL[i]; j<indexL[i+1]; j++) {
@@ -82,12 +82,12 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			W[R][i] = B[i] - VAL;
 		}
 
-		#pragma omp for private (i) reduction (+:BNRM2)
+		#pragma omp for private (i) reduction (+:BNRM2) schedule(static)
 		for(i=0; i<N; i++) {
 		  BNRM2 += B[i]*B[i];
 		}
 
-		#pragma omp for private (i)
+		#pragma omp for private (i) schedule(static)
 		for(i=0; i<N; i++) {
 		  W[DD][i]= 1.e0/D[i];
 		}
@@ -107,7 +107,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * {z} = [Minv]{r} *
 	 *******************/
 		 #pragma omp barrier
-			#pragma omp for private (i)
+			#pragma omp for private (i) schedule(static)
 		  for(i=0; i<N; i++) {
 		    W[Z][i] = W[R][i]*W[DD][i];
 		  }
@@ -119,7 +119,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 				RHO = 0.0;
 			}
 
-			#pragma omp for private (i) reduction(+:RHO)
+			#pragma omp for private (i) reduction(+:RHO) schedule(static)
 			for(i=0; i<N; i++) {
 			  RHO += W[R][i] * W[Z][i];
 			}
@@ -144,7 +144,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			// 	}
 			// }
 
-			#pragma omp for private(i)
+			#pragma omp for private(i) schedule(static)
 			for(i=0; i<N; i++) {
 				if(L==0){
 					W[P][i] = W[Z][i];
@@ -155,7 +155,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/****************
 	 * {q} = [A]{p} *
 	 ****************/
-			#pragma omp for private (i,VAL,j)
+			#pragma omp for private (i,VAL,j) schedule(static)
 			for(i=0; i<N; i++) {
 			  VAL = D[i] * W[P][i];
 			  for(j=indexL[i]; j<indexL[i+1]; j++) {
@@ -176,7 +176,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 			#pragma omp barrier
 
-			#pragma omp for private (i) reduction(+:C1)
+			#pragma omp for private (i) reduction(+:C1) schedule(static)
 			for(i=0; i<N; i++) {
 				C1 += W[P][i] * W[Q][i];
 			}
@@ -190,7 +190,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * {x} = {x} + ALPHA * {p} *
 	 * {r} = {r} - ALPHA * {q} *
 	 ***************************/
-			#pragma omp for private (i)
+			#pragma omp for private (i) schedule(static)
 			for(i=0; i<N; i++) {
 				X[i]    += ALPHA * W[P][i];
 				W[R][i] -= ALPHA * W[Q][i];
@@ -202,7 +202,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 				DNRM2 = 0.0;
 			}
 			#pragma omp barrier
-			#pragma omp for private (i) reduction(+:DNRM2)
+			#pragma omp for private (i) reduction(+:DNRM2) schedule(static)
 			for(i=0; i<N; i++) {
 			  DNRM2 += W[R][i]*W[R][i];
 			}
