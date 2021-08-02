@@ -60,7 +60,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		#pragma omp for private (i)
 		for(i=0; i<N; i++) {
 			if(i%1000==0)
-							fprintf(stdout, "N:%5d, t:%2d", i, omp_get_thread_num());um());
+							fprintf(stdout, "N:%5d, t:%2d", i, omp_get_thread_num());
 			X[i] = 0.0;
 			W[1][i] = 0.0;
 			W[2][i] = 0.0;
