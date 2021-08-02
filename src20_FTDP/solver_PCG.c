@@ -73,10 +73,10 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		#pragma omp barrier
 		#pragma omp single
 		{
-			fprintf(stdout, "\n")
+			fprintf(stdout, "\n");
 		}
 		#pragma omp barrier
-		
+
 		#pragma omp for private (i,VAL,j)
 		for(i=0; i<N; i++) {
 			if(i%1000==0)
@@ -92,7 +92,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 		#pragma omp single
 		{
-			fprintf(stdout, "\n")
+			fprintf(stdout, "\n");
 		}
 		#pragma omp barrier
 		#pragma omp for private (i) reduction (+:BNRM2)
@@ -103,7 +103,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 		#pragma omp single
 		{
-			fprintf(stdout, "\n")
+			fprintf(stdout, "\n");
 		}
 		#pragma omp barrier
 		#pragma omp for private (i)
