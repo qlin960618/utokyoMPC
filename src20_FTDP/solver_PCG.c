@@ -45,7 +45,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	BNRM2 = 0.0;
 	*ITR = N;
 	// might need to start earlier in the initialization of pointer
-	#pragma omp parallel shared(Stime, Etime, N, ERR)
+	#pragma omp parallel shared(Stime, Etime, N, ERR) private(i)
 	{
 	/* initializationunder this block
 		#pragma omp for private (i)
@@ -180,6 +180,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 		// {
 				ALPHA = RHO / C1;
 			// }
+			#pragma omp barrier
 	/***************************
 	 * {x} = {x} + ALPHA * {p} *
 	 * {r} = {r} - ALPHA * {q} *
@@ -195,19 +196,20 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			// {
 				DNRM2 = 0.0;
 			// }
+			#pragma omp barrier
 			#pragma omp for private (i) reduction(+:DNRM2)
 			for(i=0; i<N; i++) {
 			  DNRM2 += W[R][i]*W[R][i];
 			}
 
 			#pragma omp barrier
-			#pragma omp master
-			{
+			// #pragma omp master
+			// {
 				ERR = sqrt(DNRM2/BNRM2);
 		                if( (L+1)%100 ==1) {
 		                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 		                }
-			}
+			// }
 
 			#pragma omp barrier
 				if(ERR < EPS) {
