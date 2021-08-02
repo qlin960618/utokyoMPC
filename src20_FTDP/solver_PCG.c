@@ -183,15 +183,16 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 		}
 		*IER = 1;
-}
 
-N900:
-	Etime = omp_get_wtime();
-	fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
-	fprintf(stdout, "%16.6e sec. (solver)\n", Etime - Stime);
-	*ITR = L;
+	N900:
+		Etime = omp_get_wtime();
+		fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
+		fprintf(stdout, "%16.6e sec. (solver)\n", Etime - Stime);
+		*ITR = L;
 
-	free(W);
+		free(W);
 
-	return 0;
+		return 0;
+	}
+
 }
