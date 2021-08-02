@@ -151,6 +151,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/************************
 	 * ALPHA = RHO / {p}{q} *
 	 ************************/
+			#pragma omp barrier
 			#pragma omp master
 	 		{
 				C1 = 0.0;
@@ -159,6 +160,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			for(i=0; i<N; i++) {
 				C1 += W[P][i] * W[Q][i];
 			}
+			#pragma omp barrier
 			#pragma omp master
 	 		{
 				ALPHA = RHO / C1;
@@ -173,6 +175,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 				W[R][i] -= ALPHA * W[Q][i];
 			}
 
+			#pragma omp barrier
 			#pragma omp master
 			{
 				DNRM2 = 0.0;
@@ -182,6 +185,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			  DNRM2 += W[R][i]*W[R][i];
 			}
 
+			#pragma omp barrier
 			#pragma omp master
 			{
 				ERR = sqrt(DNRM2/BNRM2);
@@ -189,8 +193,8 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 		                }
 			}
-			#pragma omp barrier
 
+			#pragma omp barrier
 				if(ERR < EPS) {
 					*IER = 0;
 					goto N900;
