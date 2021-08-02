@@ -203,21 +203,22 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 
 			#pragma omp barrier
-			// #pragma omp master
-			// {
-				ERR = sqrt(DNRM2/BNRM2);
+			ERR = sqrt(DNRM2/BNRM2);
+			#pragma omp barrier
+			#pragma omp master
+			{
 		                if( (L+1)%100 ==1) {
 		                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 		                }
-			// }
+			}
 
 			#pragma omp barrier
-				if(ERR < EPS) {
-					*IER = 0;
-					goto N900;
-				} else {
-					RHO1 = RHO;
-				}
+			if(ERR < EPS) {
+				*IER = 0;
+				goto N900;
+			} else {
+				RHO1 = RHO;
+			}
 		}
 		#pragma omp barrier
 
