@@ -45,7 +45,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	BNRM2 = 0.0;
 	*ITR = N;
 	// might need to start earlier in the initialization of pointer
-	#pragma omp parallel shared(Stime, N)
+	#pragma omp parallel shared(Stime, Etime, N, ERR)
 	{
 	/* initializationunder this block
 		#pragma omp for private (i)
@@ -109,10 +109,10 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * RHO = {r}{z} *
 	 ****************/
 	 		#pragma omp barrier
-			#pragma omp master
-			{
+			// #pragma omp master
+			// {
 				RHO = 0.0;
-			}
+			// }
 
 			#pragma omp for private (i) reduction(+:RHO)
 			for(i=0; i<N; i++) {
@@ -124,10 +124,10 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * BETA = RHO / RHO1  otherwise *
 	 ********************************/
 			#pragma omp barrier
-			#pragma omp master
-			{
+			// #pragma omp master
+			// {
 				BETA = RHO / RHO1;
-			}
+			// }
 			// if(L==0){
 			// 	#pragma omp for private(i)
 			// 	for(i=0; i<N; i++) {
@@ -140,7 +140,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			// 	}
 			// }
 
-			#pragma omp for private(i)
+			#pragma omp for private(i) firstprivate(L)
 			for(i=0; i<N; i++) {
 				if(L==0){
 					W[P][i] = W[Z][i];
@@ -167,19 +167,19 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * ALPHA = RHO / {p}{q} *
 	 ************************/
 			#pragma omp barrier
-			#pragma omp master
-	 		{
+			// #pragma omp master
+	 		// {
 				C1 = 0.0;
-			}
+			// }
 			#pragma omp for private (i) reduction(+:C1)
 			for(i=0; i<N; i++) {
 				C1 += W[P][i] * W[Q][i];
 			}
 			#pragma omp barrier
-			#pragma omp master
-	 		{
+			// #pragma omp master
+	 		// {
 				ALPHA = RHO / C1;
-			}
+			// }
 	/***************************
 	 * {x} = {x} + ALPHA * {p} *
 	 * {r} = {r} - ALPHA * {q} *
@@ -191,10 +191,10 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 
 			#pragma omp barrier
-			#pragma omp master
-			{
+			// #pragma omp master
+			// {
 				DNRM2 = 0.0;
-			}
+			// }
 			#pragma omp for private (i) reduction(+:DNRM2)
 			for(i=0; i<N; i++) {
 			  DNRM2 += W[R][i]*W[R][i];
