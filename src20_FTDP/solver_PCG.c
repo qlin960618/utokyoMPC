@@ -42,7 +42,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 	}
 // might need to start earlier in the initialization of pointer
-#pragma omp parallel
+#pragma omp parallel shared(Stime)
 {
 /* initializationunder this block
 	#pragma omp for private (i)
@@ -76,12 +76,12 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 
 		BNRM2 = 0.0;
-		#pragma omp for private (i) reduction (+:BNRM2) nowait
+		#pragma omp for private (i) reduction (+:BNRM2)
 		for(i=0; i<N; i++) {
 		  BNRM2 += B[i]*B[i];
 		}
 
-		#pragma omp for private (i) nowait
+		#pragma omp for private (i)
 		for(i=0; i<N; i++) {
 		  W[DD][i]= 1.e0/D[i];
 		}
@@ -113,7 +113,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * BETA = RHO / RHO1  otherwise *
 	 ********************************/
 			if(L == 0) {
-				#pragma omp for private (i) nowait
+				#pragma omp for private (i) 
 			  for(i=0; i<N; i++) {
 					W[P][i] = W[Z][i];
 			  }
@@ -184,7 +184,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 		*IER = 1;
 
-	N900:
+		N900:
 
 
 	}
