@@ -190,9 +190,9 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		fprintf(stdout, "%16.6e sec. (solver)\n", Etime - Stime);
 		*ITR = L;
 
-		free(W);
 
-		return 0;
 	}
+	free(W);
+	return 0;
 
 }
