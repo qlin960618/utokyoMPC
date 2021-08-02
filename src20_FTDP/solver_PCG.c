@@ -96,11 +96,12 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		#pragma omp single
 		{
 			Stime = omp_get_wtime();
+			L=0;
 		}
 		#pragma omp barrier
 
 		// #pragma omp single
-		for(L=0; L<(*ITR); L++) {
+		while(L<(*ITR)) {
 
 	/*******************
 	 * {z} = [Minv]{r} *
@@ -219,6 +220,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		                if( (L+1)%100 ==1) {
 		                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 		                }
+				L++;
 			}
 
 			#pragma omp barrier
