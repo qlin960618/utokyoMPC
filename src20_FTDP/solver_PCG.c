@@ -189,27 +189,22 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		                if( (L+1)%100 ==1) {
 		                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 		                }
+			}
 
 				if(ERR < EPS) {
 					*IER = 0;
-					break;
-					// goto N900;
+					goto N900;
 				} else {
 					RHO1 = RHO;
 				}
-			}
 		}
 
+		*IER = 1;
+
+		N900:
+
+
 	}
-		// #pragma omp master
-		// {
-			if(ERR >= EPS)
-				*IER = 1;
-		// }
-
-		// N900:
-
-
 	Etime = omp_get_wtime();
 	fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 	fprintf(stdout, "%16.6e sec. (solver)\n", Etime - Stime);
