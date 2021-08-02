@@ -192,7 +192,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 
 				if(ERR < EPS) {
 					*IER = 0;
-					break
+					break;
 					// goto N900;
 				} else {
 					RHO1 = RHO;
