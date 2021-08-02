@@ -45,7 +45,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	BNRM2 = 0.0;
 	*ITR = N;
 	// might need to start earlier in the initialization of pointer
-	#pragma omp parallel shared(Stime, VAL, BNRM2, WVAL, SW, RHO, BETA, RHO1, C1, DNRM2, ALPHA, ERR)
+	#pragma omp parallel shared(Stime, ALPHA)
 	{
 	/* initializationunder this block
 		#pragma omp for private (i)
@@ -92,7 +92,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/************************************************************** ITERATION */
 
 		Stime = omp_get_wtime();
-		#pragma omp single
+		// #pragma omp single
 		for(L=0; L<(*ITR); L++) {
 
 	/*******************
@@ -105,10 +105,9 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/****************
 	 * RHO = {r}{z} *
 	 ****************/
-	 		#pragma omp master
-			{
-				RHO = 0.0;
-			}
+	 		#pragma omp barrier
+			RHO = 0.0;
+
 			#pragma omp for private (i) reduction(+:RHO)
 			for(i=0; i<N; i++) {
 			  RHO += W[R][i] * W[Z][i];
@@ -118,10 +117,9 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * {p}  = {z} if      ITER=0    *
 	 * BETA = RHO / RHO1  otherwise *
 	 ********************************/
-			#pragma omp master
-			{
-				BETA = RHO / RHO1;
-			}
+			#pragma omp barrier
+			BETA = RHO / RHO1;
+
 			#pragma omp for if(L==0) private(i)
 			for(i=0; i<N; i++) {
 				W[P][i] = W[Z][i];
@@ -188,6 +186,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		                        fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
 		                }
 			}
+			#pragma omp barrier
 
 				if(ERR < EPS) {
 					*IER = 0;
@@ -196,7 +195,8 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 					RHO1 = RHO;
 				}
 		}
-
+		#pragma omp barrier
+		
 		*IER = 1;
 
 		N900:
