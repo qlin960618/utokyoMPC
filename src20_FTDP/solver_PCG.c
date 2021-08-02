@@ -120,13 +120,16 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			#pragma omp barrier
 			BETA = RHO / RHO1;
 
-			#pragma omp for private(i) if(L==0)
-			for(i=0; i<N; i++) {
-				W[P][i] = W[Z][i];
-			}
-			#pragma omp for private(i) if(L!=0)
-		  for(i=0; i<N; i++) {
-				W[P][i] = W[Z][i] + BETA * W[P][i];
+			if(L==0){
+				#pragma omp for private(i)
+				for(i=0; i<N; i++) {
+					W[P][i] = W[Z][i];
+				}
+			}else{
+				#pragma omp for private(i)
+			  for(i=0; i<N; i++) {
+					W[P][i] = W[Z][i] + BETA * W[P][i];
+				}
 			}
 
 
