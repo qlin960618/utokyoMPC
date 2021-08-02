@@ -93,7 +93,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 
 	/************************************************************** ITERATION */
 		#pragma omp barrier
-		#pragma omp master
+		#pragma omp single
 		{
 			Stime = omp_get_wtime();
 		}
@@ -112,7 +112,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * RHO = {r}{z} *
 	 ****************/
 	 		#pragma omp barrier
-			#pragma omp master
+			#pragma omp single
 			{
 				RHO = 0.0;
 			}
@@ -128,7 +128,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * BETA = RHO / RHO1  otherwise *
 	 ********************************/
 			#pragma omp barrier
-			#pragma omp master
+			#pragma omp single
 			{
 				BETA = RHO / RHO1;
 			}
@@ -173,7 +173,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * ALPHA = RHO / {p}{q} *
 	 ************************/
 			#pragma omp barrier
-			#pragma omp master
+			#pragma omp single
 	 		{
 				C1 = 0.0;
 			}
@@ -184,7 +184,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 				C1 += W[P][i] * W[Q][i];
 			}
 			#pragma omp barrier
-			#pragma omp master
+			#pragma omp single
 	 		{
 				ALPHA = RHO / C1;
 			}
@@ -200,7 +200,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 
 			#pragma omp barrier
-			#pragma omp master
+			#pragma omp single
 			{
 				DNRM2 = 0.0;
 			}
@@ -211,7 +211,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 
 			#pragma omp barrier
-			#pragma omp master
+			#pragma omp single
 			{
 				ERR = sqrt(DNRM2/BNRM2);
 		                if( (L+1)%100 ==1) {
@@ -228,13 +228,13 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			}
 		}
 		#pragma omp barrier
-		#pragma omp master
+		#pragma omp single
 		{
 		*IER = 1;
 		}
 		N900:
 		#pragma omp barrier
-		#pragma omp master
+		#pragma omp single
 		{
 			Etime = omp_get_wtime();
 			fprintf(stdout, "%5d%16.6e\n", L+1, ERR);
