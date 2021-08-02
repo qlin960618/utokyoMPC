@@ -68,7 +68,6 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	/**************************
 	 * {r0} = {b} - {A}{xini} *
 	 **************************/
-		#pragma omp barrier
 
 		#pragma omp for schedule(static)
 		for(i=0; i<N; i++) {
@@ -93,7 +92,6 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 
 	/************************************************************** ITERATION */
-        #pragma omp barrier
         #pragma omp single
 		{
             L=0;
@@ -144,7 +142,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			// 	}
 			// }
 
-			#pragma omp for private(i) schedule(static)
+			#pragma omp for schedule(static)
 			for(i=0; i<N; i++) {
 				if(L==0){
 					W[P][i] = W[Z][i];
@@ -179,12 +177,10 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			for(i=0; i<N; i++) {
 				C1 += W[P][i] * W[Q][i];
 			}
-			#pragma omp barrier
 			#pragma omp single
 	 		{
 				ALPHA = RHO / C1;
 			}
-			#pragma omp barrier
 	/***************************
 	 * {x} = {x} + ALPHA * {p} *
 	 * {r} = {r} - ALPHA * {q} *
@@ -203,7 +199,6 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			  DNRM2 += W[R][i]*W[R][i];
 			}
 
-			#pragma omp barrier
 			#pragma omp single
 			{
 				ERR = sqrt(DNRM2/BNRM2);
