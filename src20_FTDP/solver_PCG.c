@@ -95,7 +95,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		{
 			Stime = omp_get_wtime();
 		}
-		// #pragma omp single
+		#pragma omp single
 		for(L=0; L<(*ITR); L++) {
 
 	/*******************
