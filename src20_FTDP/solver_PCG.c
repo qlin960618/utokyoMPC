@@ -106,8 +106,11 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * RHO = {r}{z} *
 	 ****************/
 	 		#pragma omp barrier
-			RHO = 0.0;
-
+			#pragma omp master
+			{
+				RHO = 0.0;
+			}
+			
 			#pragma omp for private (i) reduction(+:RHO)
 			for(i=0; i<N; i++) {
 			  RHO += W[R][i] * W[Z][i];
@@ -118,8 +121,10 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	 * BETA = RHO / RHO1  otherwise *
 	 ********************************/
 			#pragma omp barrier
-			BETA = RHO / RHO1;
-
+			#pragma omp master
+			{
+				BETA = RHO / RHO1;
+			}
 			if(L==0){
 				#pragma omp for private(i)
 				for(i=0; i<N; i++) {
