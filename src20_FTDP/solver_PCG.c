@@ -45,7 +45,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 	BNRM2 = 0.0;
 	*ITR = N;
 	// might need to start earlier in the initialization of pointer
-	#pragma omp parallel shared(Stime, Etime, N, ERR, L) private(i)
+	#pragma omp parallel shared(Stime, Etime, N, ERR, L, W) private(i)
 	{
 	/* initializationunder this block
 		#pragma omp for private (i)
@@ -95,7 +95,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		{
 			Stime = omp_get_wtime();
 		}
-		#pragma omp single
+		// #pragma omp single
 		for(L=0; L<(*ITR); L++) {
 
 	/*******************
