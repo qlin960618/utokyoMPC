@@ -42,7 +42,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		}
 	}
 
-#pragma omp parallel for private (i)
+// #pragma omp parallel for private (i)
 	for(i=0; i<N; i++) {
 		X[i] = 0.0;
 		W[1][i] = 0.0;
