@@ -4,7 +4,7 @@
 #PJM -L node=1
 #PJM --omp thread=24
 #PJM -L elapse=00:15:00
-#PJM -g gt00
+#PJM -g gt69
 #PJM -j
 #PJM -e err
 #PJM -o test3.lst
