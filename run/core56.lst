@@ -8,21 +8,17 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    6.813704e+02 sec. (solver)
+    9.792645e+01 sec. (solver)
    2097152    1.459831e+04
-[ perf record: Woken up 9352 times to write data ]
-lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/fs/xfs/xfs.ko.xz: 'Permission denied'
-/lib/modules/3.10.0-957.el7.x86_64/kernel/fs/xfs/xfs.ko.xz with build id 6f7f2c9fc938cacdb38f714725d62b8dc311a77b not found, continuing without symbols
+[ perf record: Woken up 3079 times to write data ]
 lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/infiniband/sw/rdmavt/rdmavt.ko.xz: 'Permission denied'
 /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/infiniband/sw/rdmavt/rdmavt.ko.xz with build id bf66bd6b77889942a3d13d009d7efc77eb41eaf0 not found, continuing without symbols
 lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/net/ethernet/intel/igb/igb.ko.xz: 'Permission denied'
 /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/net/ethernet/intel/igb/igb.ko.xz with build id 84380eb3b249d6e39f5aa096e8b4694c92ebb99a not found, continuing without symbols
-lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libahci.ko.xz: 'Permission denied'
-/lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libahci.ko.xz with build id 968b1902d4142d4a716a35c9bffa1e3c2e69443e not found, continuing without symbols
-lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/scsi/sd_mod.ko.xz: 'Permission denied'
-/lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/scsi/sd_mod.ko.xz with build id f457df6241a209346019b75cd2a22e40f51c093b not found, continuing without symbols
-lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libata.ko.xz: 'Permission denied'
-/lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libata.ko.xz with build id ade8d91fcb43a7f15d4a566c2d8de85932f2a0f0 not found, continuing without symbols
 lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/infiniband/core/ib_core.ko.xz: 'Permission denied'
 /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/infiniband/core/ib_core.ko.xz with build id b089bf726cae0267e974e488874bc6faffeace07 not found, continuing without symbols
-[ perf record: Captured and wrote 5801.951 MB perf.data (152085533 samples) ]
+lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libahci.ko.xz: 'Permission denied'
+/lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libahci.ko.xz with build id 968b1902d4142d4a716a35c9bffa1e3c2e69443e not found, continuing without symbols
+lzma: fopen failed on /lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libata.ko.xz: 'Permission denied'
+/lib/modules/3.10.0-957.el7.x86_64/kernel/drivers/ata/libata.ko.xz with build id ade8d91fcb43a7f15d4a566c2d8de85932f2a0f0 not found, continuing without symbols
+[ perf record: Captured and wrote 1561.778 MB perf.data (22742566 samples) ]

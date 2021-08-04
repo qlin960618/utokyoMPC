@@ -8,7 +8,7 @@
   701    1.888611e-06
   801    2.243179e-08
   826    9.818026e-09
-    1.906362e+00 sec. (solver)
+    2.018117e+00 sec. (solver)
    2097152    1.459831e+04
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 16.349 MB perf.data (428092 samples) ]
+[ perf record: Woken up 55 times to write data ]
+[ perf record: Captured and wrote 33.125 MB perf.data (481634 samples) ]

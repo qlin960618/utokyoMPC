@@ -10,4 +10,4 @@
 #PJM -o core56.lst
 
 export KMP_AFFINITY=granularity=fine,compact
-perf record ./sol20
+perf mem record ./sol20
