@@ -109,7 +109,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 		  }
 		} else {
 		  BETA = RHO / RHO1;
-#pragma omp parallel for private (i) schedule(dynamic)
+#pragma omp parallel for private (i)
 		  for(i=0; i<N; i++) {
 			W[P][i] = W[Z][i] + BETA * W[P][i];
 		}
