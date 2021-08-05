@@ -9,7 +9,7 @@
 #PJM -e err
 #PJM -o core28.lst
 
-export KMP_AFFINITY=granularity=fine,balanced
+export KMP_AFFINITY=granularity=fine,scatter
 ./sol20
 ./sol20
 ./sol20
