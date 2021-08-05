@@ -117,7 +117,7 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			RHO = 0.0;
 
             #pragma omp barrier
-            
+
 			#pragma omp for reduction(+:RHO) schedule(static)
 			for(i=0; i<N; i++) {
 			  RHO += W[R][i] * W[Z][i];
@@ -131,23 +131,14 @@ solve_PCG (int N, int NL, int NU, int *indexL, int *itemL, int *indexU, int *ite
 			{
 				BETA = RHO / RHO1;
 			}
-			// if(L==0){
-			// 	#pragma omp for private(i)
-			// 	for(i=0; i<N; i++) {
-			// 		W[P][i] = W[Z][i];
-			// 	}
-			// }else{
-			// 	#pragma omp for private(i)
-			//   for(i=0; i<N; i++) {
-			// 		W[P][i] = W[Z][i] + BETA * W[P][i];
-			// 	}
-			// }
-
-			#pragma omp for schedule(static)
-			for(i=0; i<N; i++) {
-				if(L==0){
+            if(L==0){
+    			#pragma omp for schedule(static)
+    			for(i=0; i<N; i++) {
 					W[P][i] = W[Z][i];
-				}else{
+				}
+            }else{
+                #pragma omp for schedule(static)
+                for(i=0; i<N; i++) {
 					W[P][i] = W[Z][i] + BETA * W[P][i];
 				}
 			}
